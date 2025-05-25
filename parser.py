@@ -23,46 +23,55 @@ def parse_message(file_path):
         entries = re.split(r',\s*', line)
 
         for entry in entries:
-            # Match patterns like "copy of" or "of"
-            match = re.match(r'(\d+)\s+(?:copies of|copy of|of)?\s*(.+)', entry, re.IGNORECASE)
+            entry = entry.strip()
+            if not entry:
+                continue  # Skip empty entries after stripping
+
+            # Match patterns like "copy of" or "of" with quantity at the start
+            match = re.match(r'^(\d+)\s+(?:copies of|copy of|of)?\s*(.+)$', entry, re.IGNORECASE)
             if match:
                 quantity = int(match.group(1))
                 item_name = match.group(2).strip().lower()
                 items.append((quantity, item_name))
+            else:
+                # No quantity found, default to 1
+                items.append((1, entry.lower()))
+
     return items
 
+
 def normalize_item_name(item_name):
-  """
-  Normalizes the item name to match the Warframe Market API's expected format. that apparenly is as normalized as Gun CO interactions
-  """
+    """
+    Normalizes the item name to match the Warframe Market API's expected format.
+    """
 
-  item_name = item_name.lower().strip()
+    item_name = item_name.lower().strip()
 
-  # Weird URL special cases handler
-  special_cases = {
-    "semi-shotgun cannonade": "shotgun_cannonade",
-    "summoner’s wrath": "summoner%E2%80%99s_wrath",
-    "summoner's wrath": "summoner%E2%80%99s_wrath",
-    "fear sense": "sense_danger",
-    "negation armor": "negation_swarm"
-  }
-  if item_name in special_cases:
-    return special_cases[item_name]
-  #
+    # Weird URL special cases handler
+    special_cases = {
+        "semi-shotgun cannonade": "shotgun_cannonade",
+        "summoner’s wrath": "summoner%E2%80%99s_wrath",
+        "summoner's wrath": "summoner%E2%80%99s_wrath",
+        "fear sense": "sense_danger",
+        "negation armor": "negation_swarm"
+    }
+    if item_name in special_cases:
+        return special_cases[item_name]
 
-  # Normalizer for most items
-  item_name = (
-    item_name
-      .replace("orokin", "corrupted")
-      .replace("&", "and")
-      .replace(".", "")
-      .replace("-", "_")
-      .replace(" ", "_")
-      .replace("'", "")
-      .replace("’", "")
-  )
+    # Normalizer for most items
+    item_name = (
+        item_name
+        .replace("orokin", "corrupted")
+        .replace("&", "and")
+        .replace(".", "")
+        .replace("-", "_")
+        .replace(" ", "_")
+        .replace("'", "")
+        .replace("’", "")
+    )
 
-  return item_name
+    return item_name
+
 
 def get_item_price(item_name):
     """
@@ -106,6 +115,7 @@ def get_item_price(item_name):
         print(f"Error fetching price for '{item_name}': {e}")
         return None
 
+
 def write_to_excel(items, output_file):
     """
     Writes the item data to an Excel file
@@ -136,6 +146,7 @@ def write_to_excel(items, output_file):
 
     wb.save(output_file)
     print(f"Data written to {output_file}")
+
 
 if __name__ == "__main__":
     input_file = 'input.txt'
