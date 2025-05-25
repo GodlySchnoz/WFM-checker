@@ -50,7 +50,6 @@ def normalize_item_name(item_name):
     # Weird URL special cases handler
     special_cases = {
         "semi-shotgun cannonade": "shotgun_cannonade",
-        "summoner’s wrath": "summoner%E2%80%99s_wrath",
         "summoner's wrath": "summoner%E2%80%99s_wrath",
         "fear sense": "sense_danger",
         "negation armor": "negation_swarm"
@@ -67,8 +66,11 @@ def normalize_item_name(item_name):
         .replace("-", "_")
         .replace(" ", "_")
         .replace("'", "")
-        .replace("’", "")
     )
+
+    # Check if the item name ends with systems, chassis, or blueprint
+    if item_name.endswith(('_systems', '_chassis', '_blueprint')) and item_name not in exceptions:
+        item_name += '_blueprint'
 
     return item_name
 
@@ -147,6 +149,17 @@ def write_to_excel(items, output_file):
     wb.save(output_file)
     print(f"Data written to {output_file}")
 
+exceptions = [
+    'carrier_prime_systems',
+    'dethcube_prime_systems',
+    'helios_prime_systems',
+    'nautilus_prime_systems',
+    'nautilus_systems',
+    'shade_prime_systems',
+    'shedu_chassis',
+    'spectra_vandal_chassis',
+    'wyrm_prime_systems'
+]
 
 if __name__ == "__main__":
     input_file = 'input.txt'
