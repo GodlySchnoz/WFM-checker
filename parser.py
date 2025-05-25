@@ -62,7 +62,7 @@ def normalize_item_name(item_name):
         .replace("orokin", "corrupted")
     )
 
-    # Check if the item name ends with systems, chassis, or blueprint
+    # Check if the item name ends with systems, chassis, or other specific suffixes
     if item_name.endswith(('_systems', '_chassis', "_harness", "_wings")) and item_name not in exceptions:
         item_name += '_blueprint'
 
