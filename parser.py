@@ -47,29 +47,23 @@ def normalize_item_name(item_name):
 
     item_name = item_name.lower().strip()
 
-    # Weird URL special cases handler
-    special_cases = {
-        "semi-shotgun cannonade": "shotgun_cannonade",
-        "summoner's wrath": "summoner%E2%80%99s_wrath",
-        "fear sense": "sense_danger",
-        "negation armor": "negation_swarm"
-    }
     if item_name in special_cases:
         return special_cases[item_name]
 
     # Normalizer for most items
     item_name = (
         item_name
-        .replace("orokin", "corrupted")
+        
         .replace("&", "and")
         .replace(".", "")
         .replace("-", "_")
         .replace(" ", "_")
         .replace("'", "")
+        .replace("orokin", "corrupted")
     )
 
     # Check if the item name ends with systems, chassis, or blueprint
-    if item_name.endswith(('_systems', '_chassis', '_blueprint')) and item_name not in exceptions:
+    if item_name.endswith(('_systems', '_chassis', "_harness", "_wings")) and item_name not in exceptions:
         item_name += '_blueprint'
 
     return item_name
@@ -149,6 +143,35 @@ def write_to_excel(items, output_file):
     wb.save(output_file)
     print(f"Data written to {output_file}")
 
+
+# Weird URL special cases handler
+special_cases = {
+    "semi-shotgun cannonade": "shotgun_cannonade",
+    "summoner's wrath": "summoner%E2%80%99s_wrath",
+    "fear sense": "sense_danger",
+    "negation armor": "negation_swarm",
+    "teleport rush": "fatal_teleport",
+    "ghoulsaw blade": "ghoulsaw_blade_blueprint",
+    "ghoulsaw engine": "ghoulsaw_engine_blueprint",
+    "ghoulsaw grip": "ghoulsaw_grip_blueprint",
+    "mutalist alad v assassinate (key)": "mutalist_alad_v_assassinate_key",
+    "mutalist alad v nav coordinate": "mutalist_nav_coordinates",
+    "scan aquatic lifeforms": "scan_lifeforms",
+    "orokin tower extraction scene": "orokin_tower_extraction_scene",
+    "orokin derelict simulacrum": "orokin_derelict_simulacrum",
+    "orokin derelict plaza scene": "orokin_derelict_plaza_scene",
+    "central mall backroom scene": "central_mall_backroom",
+    "höllvanian historic quarter in spring scene": "höllvanian_historic_quarter_in_spring",
+    "höllvanian intersection in winter scene": "höllvanian_intersection_in_winter",
+    "höllvanian old town in fall scene": "höllvanian_old_town_in_fall",
+    "höllvanian tenements in summer scene": "höllvanian_tenements_in_summer",
+    "höllvanian terrace in summer scene": "höllvanian_terrace_in_summer",
+    "orbit arcade scene": "orbit_arcade",
+    "tech titan electronics store scene": "tech_titan_electronics_store",
+    "riot-848 stock blueprint": "riot_848_stock",
+    "riot-848 barrel blueprint": "riot_848_barrel",
+    "riot-848 receiver blueprint": "riot_848_receiver",
+    }
 exceptions = [
     'carrier_prime_systems',
     'dethcube_prime_systems',
