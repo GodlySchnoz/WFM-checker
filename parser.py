@@ -31,23 +31,33 @@ def parse_message(file_path):
                 items.append((quantity, item_name))
     return items
 def normalize_item_name(item_name):
-    """
-    Normalizes the item name to match the Warframe Market API's expected format. that apparenly is as normalized as Gun CO interactions
-    """
-    item_name = item_name.lower()
-    if item_name == "semi-shotgun cannonade": # Special case for semi-shotgun cannonade for no reason
-        item_name = "shotgun_cannonade"
-        return item_name
-    item_name = item_name.replace(".", "")  # Remove periods
-    item_name = item_name.replace("-", "_")  # Remove colons
-    item_name = item_name.replace(" ", "_")  # Replace spaces with underscores
-    if (item_name == "summoner's_wrath" or item_name == "summoner’s_wrath"): # Handle summoner's wrath that has it's special url for no reason
-        item_name = "summoner%E2%80%99s_wrath"
-    else:
-        item_name = item_name.replace("'", "")  # Remove apostrophes
-        item_name = item_name.replace("’", "")  # Remove typographic apostrophes
-    return item_name
+  """
+  Normalizes the item name to match the Warframe Market API's expected format. that apparenly is as normalized as Gun CO interactions
+  """
 
+  item_name = item_name.lower().strip()
+
+  # Weird URL special cases handler
+  special_cases = {
+    "semi-shotgun cannonade": "shotgun_cannonade",
+    "summoner's wrath": "summoner%E2%80%99s_wrath",
+    "summoner’s wrath": "summoner%E2%80%99s_wrath",
+  }
+  if item_name in special_cases:
+    return special_cases[item_name]
+  #
+
+  # Normalizer for most items
+  item_name = (
+    item_name
+      .replace(".", "")
+      .replace("-", "_")
+      .replace(" ", "_")
+      .replace("'", "")
+      .replace("’", "")
+  )
+
+  return item_name
 
 def get_item_price(item_name):
     """
