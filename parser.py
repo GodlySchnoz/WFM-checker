@@ -30,6 +30,7 @@ def parse_message(file_path):
                 item_name = match.group(2).strip().lower()
                 items.append((quantity, item_name))
     return items
+
 def normalize_item_name(item_name):
   """
   Normalizes the item name to match the Warframe Market API's expected format. that apparenly is as normalized as Gun CO interactions
@@ -40,8 +41,10 @@ def normalize_item_name(item_name):
   # Weird URL special cases handler
   special_cases = {
     "semi-shotgun cannonade": "shotgun_cannonade",
-    "summoner's wrath": "summoner%E2%80%99s_wrath",
     "summoner’s wrath": "summoner%E2%80%99s_wrath",
+    "summoner's wrath": "summoner%E2%80%99s_wrath",
+    "fear sense": "sense_danger",
+    "negation armor": "negation_swarm"
   }
   if item_name in special_cases:
     return special_cases[item_name]
@@ -50,6 +53,8 @@ def normalize_item_name(item_name):
   # Normalizer for most items
   item_name = (
     item_name
+      .replace("orokin", "corrupted")
+      .replace("&", "and")
       .replace(".", "")
       .replace("-", "_")
       .replace(" ", "_")
