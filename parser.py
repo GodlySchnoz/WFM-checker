@@ -1,6 +1,10 @@
 import re
 import requests
 import openpyxl
+import statistics
+from datetime import datetime
+from dateutil.tz import tzutc
+from dateutil.parser import parse   
 
 
 def parse_message(file_path):
@@ -88,15 +92,20 @@ def get_item_price(item_name):
 
         orders = data['payload']['orders']
         # Filter for sell orders from users who are online
+
+        now = datetime.now()
+        todaystr = f'{now.year}-{now.month:02}-{now.day:02}'
+
+
         sell_orders = [
-            order for order in orders
-            if order['order_type'] == 'sell' and order['user']['status'] == 'ingame'
+            order for order in orders 
+            if todaystr in order['last_update'] and order['order_type'] == 'sell' and order['user']['status'] == 'ingame'
         ]
 
         if sell_orders:
-            # Get the minimum price among online sellers
-            min_price = min(order['platinum'] for order in sell_orders)
-            return min_price
+            # Get the median price among online sellers
+            median_price = statistics.median(order['platinum'] for order in sell_orders)
+            return median_price
         else:
             # If no online sellers, get the minimum price among all sell orders
             sell_orders = [
