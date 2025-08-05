@@ -1,0 +1,87 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ main ]
+    paths: 
+      - 'parser.py'
+      - 'requirements.txt'
+      - 'parser.spec'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pyinstaller
+    
+    - name: Generate version number
+      id: version
+      run: |
+        $commits = git rev-list --count HEAD
+        $short_sha = git rev-parse --short HEAD
+        $version = "v1.0.$commits-$short_sha"
+        echo "version=$version" >> $env:GITHUB_OUTPUT
+        echo "Version: $version"
+    
+    - name: Build executable
+      run: |
+        pyinstaller parser.spec
+    
+    - name: Create release archive
+      run: |
+        $archiveName = "WFM-checker-${{ steps.version.outputs.version }}.zip"
+        if (Test-Path "dist/parser") {
+          Compress-Archive -Path "dist/parser/*" -DestinationPath $archiveName -Force
+          Write-Host "Created archive: $archiveName"
+          Get-ChildItem $archiveName
+        } else {
+          Write-Error "Build output directory 'dist/parser' not found"
+          exit 1
+        }
+    
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ steps.version.outputs.version }}
+        name: WFM Checker ${{ steps.version.outputs.version }}
+        body: |
+          Automated release of WFM Checker
+          
+          Changes in this release:
+          - Updated parser.py with latest features
+          - Built with Python 3.11
+          
+          **Usage:**
+          1. Download and extract the ZIP file
+          2. Place your input file (input.txt, input.csv, or input.xlsx) in the same folder
+          3. Run `parser.exe` from command line with desired options
+          
+          **Command line options:**
+          - `-i INPUT`: Input file (default: input.txt)
+          - `-o OUTPUT`: Output Excel file (default: output.xlsx)
+          - `-l`: Use listings/orders API
+          - `-s`: Use statistics API (default)
+          - `-m`: Use minimum prices
+          - `-M`: Use median prices (default)
+        files: |
+          WFM-checker-${{ steps.version.outputs.version }}.zip
+        draft: false
+        prerelease: false

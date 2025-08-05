@@ -1,2 +1,8 @@
-input.txt
-output.xlsx
+*.txt
+*.xlsx
+*.csv
+
+!requirements.txt
+
+/dist
+/build
