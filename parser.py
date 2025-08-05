@@ -164,10 +164,12 @@ def normalize_item_name(item_name):
         .replace(" ", "_")
         .replace("'", "")
         .replace("orokin", "corrupted")
+        .replace("bp", "blueprint")
     )
 
     # Check item suffixes and add blueprint if necessary
-    if item_name.endswith(('_systems', '_chassis', "_harness", "_wings")) and item_name not in exceptions:
+    if (item_name.endswith(('_systems', '_chassis', "_harness", "_wings")) or 
+        any(item_name.endswith(warframe) for warframe in warframes)) and item_name not in exceptions:
         item_name += '_blueprint'
 
     return item_name
@@ -485,6 +487,73 @@ exceptions = [
     'spectra_vandal_chassis',
     'wyrm_prime_systems'
 ]
+# List of Warframe prime names, this includes all primes of all warframes released
+# even those who do not have a prime variant yet, this is done because the normal variant is undtradable and as such cannot be found in the market.
+# this was done to avoid having to update the list every time a new prime is released
+warframes = [
+    'ash_prime',
+    'ember_prime',
+    'excalibur_prime',
+    'loki_prime',
+    'mag_prime',
+    'rhino_prime',
+    'trinity_prime',
+    'volt_prime',
+    'frost_prime',
+    'nyx_prime',
+    'banshee_prime',
+    'saryn_prime',
+    'vauban_prime',
+    'nova_prime',
+    'nekros_prime',
+    'valkyr_prime',
+    'oberon_prime',
+    'zephyr_prime',
+    'hydroid_prime',
+    'mirage_prime',
+    'limbo_prime',
+    'mesa_prime',
+    'chroma_prime',
+    'equinox_prime',
+    'atlas_prime',
+    'wukong_prime',
+    'ivara_prime',
+    'nezha_prime',
+    'inaros_prime',
+    'titania_prime',
+    'nidus_prime',
+    'octavia_prime',
+    'harrow_prime',
+    'gara_prime',
+    'khora_prime',
+    'revenant_prime',
+    'garuda_prime',
+    'baruuk_prime',
+    'hildryn_prime',
+    'wisp_prime',
+    'gauss_prime',
+    'grendel_prime',
+    'protea_prime',
+    'xaku_prime',
+    'lavos_prime',
+    'sevagoth_prime',
+    'yareli_prime',
+    'caliban_prime',
+    'gyre_prime',
+    'styanax_prime',
+    'voruna_prime',
+    'citrine_prime',
+    'kullervo_prime',
+    'dagath_prime',
+    'qorvex_prime',
+    'dante_prime',
+    'jade_prime',
+    'koumei_prime',
+    'cyte_09_prime',
+    'temple_prime',
+    'oraxia_prime',
+    'uriel_prime'
+]  
 
 def main():
     parser = argparse.ArgumentParser(
