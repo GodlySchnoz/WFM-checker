@@ -15,11 +15,38 @@ To run this project it's as simple as cloning the repository with
 git clone https://github.com/GodlySchnoz/WFM-checker.git
 ```
 
-and then installing the required python packages with 
+and then installing the required python packages with
+
 ```bash
 pip install requests openpyxl
 ```
+
 or
+
 ```bash
 pip install -r requirements.txt
+```
+
+Then you can run the program from the command line with
+
+```bash
+python parser.py -[options]
+```
+
+also you can run the program with the executable from the command line with
+
+```bash
+WFM-checker.exe -[options]
+```
+
+### Options
+
+```bash
+-h, --help: Show this help message and exit
+-i INPUT: Input file (default: input.txt)
+-o OUTPUT: Output Excel file (default: output.xlsx)
+-l: Use listings/orders API
+-s: Use statistics API (default)
+-m: Use minimum prices
+-M: Use median prices (default)
 ```

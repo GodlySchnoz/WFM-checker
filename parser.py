@@ -273,8 +273,8 @@ def get_item_price_stat(item_name, price_method, rank):
             if unranked_data:
                 closed_data = unranked_data
             # If no rank 0 data, use all data (fallback)
-        # For non-mod items (no mod_rank or star fields), use all available data as-is
-        
+        # For non-mod items (and non-ayatan sculptures), use all available data as-is
+
         if not closed_data:
             print(f"No suitable data found for '{item_name}' with rank {rank}")
             return None
@@ -368,7 +368,7 @@ def get_item_price(item_name, price_method, rank):
                     # Add price for each available item in the order
                     all_prices.extend([order['platinum']] * order['quantity'])
                 
-            if all_prices:
+            if all_prices: #TODO add handling for filtered median to remove expensive outliers (useful for low traded mods)
                 # Calculate true quantity-weighted median
                 sorted_prices = sorted(all_prices)
                 n = len(sorted_prices)
